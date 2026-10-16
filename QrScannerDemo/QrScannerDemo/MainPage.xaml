@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QrScannerDemo.Controls"
+             x:Class="QrScannerDemo.MainPage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <Style x:Key="ToggleButton" TargetType="Button">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="HeightRequest" Value="40" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="BackgroundColor" Value="#33FFFFFF" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Camera + custom overlay (native). Forms views below are drawn on top of it. -->
+        <controls:ScannerView x:Name="Scanner"
+                              BarcodeDetected="OnBarcodeDetected"
+                              StatsUpdated="OnStatsUpdated"
+                              CameraError="OnCameraError"
+                              AutomationProperties.Name="Camera viewfinder" />
+
+        <!-- Top bar: title + live stats -->
+        <StackLayout VerticalOptions="Start" BackgroundColor="{StaticResource PanelBackground}" Padding="16,12" Spacing="2">
+            <Label Text="QR Scanner" TextColor="White" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="StatsLabel" Text="Starting camera…" TextColor="#B0BEC5" FontSize="12" />
+        </StackLayout>
+
+        <!-- Bottom panel: result, zoom, toggles, history -->
+        <StackLayout VerticalOptions="End" BackgroundColor="{StaticResource PanelBackground}" Padding="16,12,16,20" Spacing="10">
+
+            <Frame x:Name="ResultCard" IsVisible="False" BackgroundColor="#1E272E" CornerRadius="12" Padding="14" HasShadow="False">
+                <StackLayout Spacing="6">
+                    <Label x:Name="ResultMeta" TextColor="{StaticResource Accent}" FontSize="12" FontAttributes="Bold" />
+                    <Label x:Name="ResultText" TextColor="White" FontSize="16" MaxLines="4" LineBreakMode="TailTruncation" />
+                    <StackLayout Orientation="Horizontal" Spacing="8">
+                        <Button Text="Copy" Style="{StaticResource ToggleButton}" Clicked="OnCopyClicked" />
+                        <Button x:Name="OpenButton" Text="Open link" Style="{StaticResource ToggleButton}" Clicked="OnOpenClicked" />
+                        <Button x:Name="ScanAgainButton" Text="Scan again" Style="{StaticResource ToggleButton}"
+                                BackgroundColor="{StaticResource Accent}" Clicked="OnScanAgainClicked" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Text="Zoom" TextColor="White" VerticalOptions="Center" />
+                <Slider x:Name="ZoomSlider" Grid.Column="1" Minimum="0" Maximum="1"
+                        MinimumTrackColor="{StaticResource Accent}" ThumbColor="White"
+                        Value="{Binding Source={x:Reference Scanner}, Path=Zoom, Mode=TwoWay}"
+                        AutomationProperties.Name="Zoom" />
+                <Label x:Name="ZoomLabel" Grid.Column="2" Text="1.0×" TextColor="White" VerticalOptions="Center" WidthRequest="40" />
+            </Grid>
+
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Start">
+                <Button x:Name="TorchButton" Text="Torch: off" Style="{StaticResource ToggleButton}" Margin="0,0,8,8" Clicked="OnTorchClicked" />
+                <Button x:Name="AutoZoomButton" Text="Auto-zoom: on" Style="{StaticResource ToggleButton}" Margin="0,0,8,8" Clicked="OnAutoZoomClicked" />
+                <Button x:Name="ModeButton" Text="Mode: single" Style="{StaticResource ToggleButton}" Margin="0,0,8,8" Clicked="OnModeClicked" />
+                <Button x:Name="FormatsButton" Text="Formats: QR only" Style="{StaticResource ToggleButton}" Margin="0,0,8,8" Clicked="OnFormatsClicked" />
+                <Button x:Name="RegionButton" Text="Region: frame only" Style="{StaticResource ToggleButton}" Margin="0,0,8,8" Clicked="OnRegionClicked" />
+            </FlexLayout>
+
+            <StackLayout x:Name="HistoryPanel" IsVisible="False" Spacing="4">
+                <Label x:Name="HistoryHeader" Text="Scanned (0)" TextColor="White" FontAttributes="Bold" />
+                <CollectionView x:Name="HistoryList" HeightRequest="120">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="0,4" Spacing="0">
+                                <Label Text="{Binding Text}" TextColor="White" FontSize="14" MaxLines="1" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding Summary}" TextColor="#90A4AE" FontSize="11" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </StackLayout>
+
+        <!-- Shown when camera permission is denied -->
+        <StackLayout x:Name="PermissionPanel" IsVisible="False" BackgroundColor="Black"
+                     VerticalOptions="Fill" HorizontalOptions="Fill" Padding="32" Spacing="16">
+            <Label Text="Camera access needed" TextColor="White" FontSize="22" FontAttributes="Bold"
+                   VerticalOptions="EndAndExpand" HorizontalTextAlignment="Center" />
+            <Label Text="Allow camera access to scan QR codes." TextColor="#B0BEC5" HorizontalTextAlignment="Center" />
+            <Button Text="Open settings" BackgroundColor="{StaticResource Accent}" TextColor="White"
+                    VerticalOptions="StartAndExpand" Clicked="OnOpenSettingsClicked" />
+        </StackLayout>
+    </Grid>
+</ContentPage>

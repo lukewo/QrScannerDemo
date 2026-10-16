@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.lukewo.qrscannerdemo">
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Haptic feedback on a successful scan (Xamarin.Essentials HapticFeedback). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+
+    <!-- ML Kit's bundled barcode model ships in the APK (Xamarin.Google.MLKit.BarcodeScanning),
+         so no Play services model download is needed. -->
+    <application android:label="QR Scanner Demo" android:theme="@style/MainTheme"></application>
+</manifest>

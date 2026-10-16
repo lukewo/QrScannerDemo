@@ -1,0 +1,16 @@
+# ---- Visual Studio / .NET build output ----
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+# ---- Android ----
+local.properties
+*.apk
+*.aab
+
+# ---- OS ----
+Thumbs.db
+.DS_Store
